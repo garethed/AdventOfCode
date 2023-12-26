@@ -1,5 +1,6 @@
 
 using System.Collections;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -150,5 +151,50 @@ public static class Utils
         }
     }
 
+    public static string After(this string s, string infix)
+    {
+        return s.Split(infix)[1].Trim();
+    }
 
+    public static int[] ToIntArray(this string s, string separator = " ")
+    {
+        return s.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(n => int.Parse(n)).ToArray();
+    }
+
+    public static long[] ToLongArray(this string s, string separator = " ")
+    {
+        return s.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(n => long.Parse(n)).ToArray();
+    }    
+
+    public static void Add<K,V>(this IDictionary<K,HashSet<V>> dict, K key, V value) 
+    {
+        if (!dict.ContainsKey(key)) {
+            dict[key] = new HashSet<V>();
+        }
+        
+        dict[key].Add(value);
+    }
+
+    public static long gcf(long a, long b)
+    {
+        while (b != 0)
+        {
+            long temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    public static long lcm(long a, long b)
+    {
+        return (a / gcf(a, b)) * b;
+    }    
+
+    public static IEnumerable<V> Pairwise<T,V>(this IEnumerable<T> seq, Func<T,T,V> func)
+    {
+        return seq.Zip(seq.Skip(1), func);
+    }
+
+    
 }

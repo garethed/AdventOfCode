@@ -10,6 +10,7 @@ public record Solution(int year, int day, int part, Action action)
     public static List<Solution> AllSolutions => SolutionAttribute.GetAllSolutions();
 }
 
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class SolutionAttribute : Attribute
 {
     public int year { get; private set; }
@@ -59,8 +60,7 @@ public class SolutionAttribute : Attribute
         .GetCallingAssembly()
         .GetTypes()
         .SelectMany( t => t.GetMethods())
-        .Select(m => new { Method = m, SolutionAttribute = (SolutionAttribute?)m.GetCustomAttributes(typeof(SolutionAttribute), false ).FirstOrDefault()})
-        .Where(t => t.SolutionAttribute != null)
+        .SelectMany(m => m.GetCustomAttributes(typeof(SolutionAttribute), false ).Cast<SolutionAttribute>().Select(a => new { Method = m, SolutionAttribute = a}))
         .Select(t => new Solution(t.SolutionAttribute!.year, t.SolutionAttribute.day, t.SolutionAttribute.part, () => t.SolutionAttribute.InvokeMethod(t.Method)))
         .OrderByDescending(s => s.year).ThenByDescending(s => s.day).ThenByDescending(s => s.part)
         .ToList();

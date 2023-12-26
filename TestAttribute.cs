@@ -23,7 +23,7 @@ public class TestAttribute : Attribute
                     var p2 = m.GetParameters().Zip(t.parameters, (targetParam, value) => CoerceParameter(value, targetParam.ParameterType)).ToArray(); 
                     var o = m.Invoke(target, p2);
                     var e2 = Convert.ChangeType(t.expected, m.ReturnType);
-                    ret &= Utils.Assert(p2, o.ToString(), e2.ToString());
+                    ret &= Utils.Assert(p2, ToString(o), ToString(e2));
                 }
                 catch (Exception e)
                 {
@@ -35,6 +35,13 @@ public class TestAttribute : Attribute
         }
 
         return ret;
+    }
+
+    private static string ToString(object o)
+    {
+        if (o is long) return string.Format("{0:#,##0}", (long) o);
+        return o.ToString();
+
     }
 
     private static object CoerceParameter(object value, Type targetType)

@@ -20,7 +20,7 @@ record Input (string Data)
             case nameof(Int32):
                 return int.Parse(data);
             case nameof(String):
-                return data;  
+                return data.Replace("\r\n", "\n");  
             case "String[]":
                 return Utils.splitLines(data);
         }

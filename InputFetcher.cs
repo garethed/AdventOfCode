@@ -28,3 +28,4 @@ static class InputFetcher
         return input;
     }
 }
+

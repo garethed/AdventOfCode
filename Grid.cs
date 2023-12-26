@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text;
 
 namespace AdventOfCode;
 
@@ -11,14 +12,20 @@ public class Grid2<T>
     public Grid2(T[,] Data) 
     { 
         this.Data = Data; 
-        Width = Data.GetLength(1);
-        Height = Data.GetLength(0);
+        Width = Data.GetLength(0);
+        Height = Data.GetLength(1);
     }
 
     public T this[Point2 p]
     {
         get { return Data[p.x, p.y]; }
         set { Data[p.x, p.y] = value; }
+    }
+
+    public T this[int x, int y]
+    {
+        get { return Data[x, y]; }
+        set { Data[x, y] = value; }
     }
 
     public bool Contains(Point2 p)
@@ -42,6 +49,7 @@ public class Grid2<T>
 public class CharGrid2 : Grid2<char>
 {
     public CharGrid2(String[] Data) : base(CharArrayFromStrings(Data)) {}
+    public CharGrid2(string data) : this(Utils.splitLines(data)) {}
 
     private static char[,] CharArrayFromStrings(string[] strings)
     {
@@ -56,5 +64,47 @@ public class CharGrid2 : Grid2<char>
 
         return ret;
     }
+
+    public Grid2<T> Cast<T>(Func<char,T> func)
+    {
+        var converted = new T[Width, Height];
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                converted[x,y] = func(Data[x,y]);
+            }
+        }
+
+        return new Grid2<T>(converted);
+    }
+
+    public void Print()
+    {
+        Console.Write("\n\n");
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                Utils.Write(Data[x,y].ToString(), ConsoleColor.Gray);
+            }
+            Console.WriteLine();
+        }
+    }
+
+    public string getString()
+    {
+        var sb = new StringBuilder();
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                sb.Append(Data[x,y]);
+            }
+        }
+        return sb.ToString();
+    }    
+
+
 
 }
