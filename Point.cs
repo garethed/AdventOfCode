@@ -10,6 +10,7 @@ public record struct Point2(int x, int y)
     public Point2 Clockwise() => new Point2(-y, x);
     public Point2 Anticlockwise() => new Point2(y, -x);
     
+    public int Abs() => Math.Abs(x) + Math.Abs(y);
 
     public static IEnumerable<Point2> enumerateGrid(int width, int height) 
     {

@@ -38,6 +38,7 @@ public class Grid2<T>
     public IEnumerable<Point2> ContainedPoints(IEnumerable<Point2> input) { return input.Where(p => Contains(p)); }
 
     public IEnumerable<Point2> Neighbours8(Point2 p) { return ContainedPoints(p.Neighbours8); }
+    public IEnumerable<Point2> Neighbours4(Point2 p) { return ContainedPoints(p.Neighbours4); }
 
     public override string ToString()
     {

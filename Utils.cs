@@ -82,7 +82,7 @@ public static class Utils
         //if (!System.Diagnostics.Debugger.IsAttached)
         {
             var pos = Console.CursorLeft;
-            Console.Write(msg);
+            Console.Write(msg + "           ");
             Console.CursorLeft = pos;
         }
     }    
