@@ -55,7 +55,7 @@ public class Day13
 
             if (differenceCount == targetDifferences) 
             {
-                Utils.WriteLine($"found reflection at {current}", ConsoleColor.Yellow);
+                //Utils.WriteLine($"found reflection at {current}", ConsoleColor.Yellow);
                 yield return current.x + current.y;
             }
 

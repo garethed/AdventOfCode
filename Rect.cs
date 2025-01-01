@@ -26,13 +26,19 @@ public struct Rect
     public Rect(int x, int y, int w, int h)
     {
         topLeft = new Point2(x,y);
-        bottomRight = new Point2(x + w, y + h);
+        bottomRight = new Point2(x + w - 1, y + h - 1);
     }
 
     public bool Contains(Rect other)
     {
         return topLeft.x <= other.topLeft.x && topLeft.y <= other.topLeft.y && bottomRight.x >= other.bottomRight.x && bottomRight.y >= other.bottomRight.y;
     }
+
+    public bool Contains(Point2 p)
+    {
+        return topLeft.x <= p.x && topLeft.y <= p.y && bottomRight.x >= p.x && bottomRight.y >= p.y;
+    }
+
 
     public int Width { get => bottomRight.x - topLeft.x; }
     public int Height { get => bottomRight.y - topLeft.y; }
@@ -43,6 +49,11 @@ public struct Rect
     public Rect TopEdge { get => new Rect(topLeft, Width, 0); }
     public Rect BottomEdge { get => new Rect(topLeft.x, bottomRight.y, Width, 0); }
 
+    public override string ToString()
+    {
+        return $"[{topLeft} to {bottomRight}]";
+    }
 
-    
+
+
 }

@@ -1,9 +1,10 @@
+using System.Collections;
 using System.Drawing;
 using System.Text;
 
 namespace AdventOfCode;
 
-public class Grid2<T>
+public class Grid2<T> : IEnumerable<KeyValuePair<Point2, T>>, IEnumerable 
 {
     public T[,] Data;
     public int Width;
@@ -33,6 +34,16 @@ public class Grid2<T>
         return p.x >= 0 && p.x < Width && p.y >= 0 && p.y < Height;
     }
 
+    public T GetOrDefault(Point2 p, T d)
+    {
+        return Contains(p) ? this[p] : d;
+    }
+
+    public Point2 First(T value)
+    {
+        return this.First(kv => kv.Value.Equals(value)).Key;
+    }
+
     public IEnumerable<Point2> Points { get { return Point2.enumerateGrid(Width, Height); }}
 
     public IEnumerable<Point2> ContainedPoints(IEnumerable<Point2> input) { return input.Where(p => Contains(p)); }
@@ -43,6 +54,29 @@ public class Grid2<T>
     public override string ToString()
     {
         return $"{typeof(T).Name}[{Width}x{Height}]";
+    }
+
+    public IEnumerator<KeyValuePair<Point2, T>> GetEnumerator()
+    {
+        foreach (var p in Points)
+        {
+            yield return new KeyValuePair<Point2, T>(p, this[p]);
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+       return GetEnumerator();
+    }
+}
+
+public class IntGrid2 : Grid2<int>
+{
+    public IntGrid2(string data) : base(CharGridToInt(data)) {}
+
+    private static int[,] CharGridToInt(string data)
+    {
+        return new CharGrid2(data).Cast(c => int.Parse(c.ToString())).Data;
     }
 
 }

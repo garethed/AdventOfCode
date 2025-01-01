@@ -23,7 +23,7 @@ public class TestAttribute : Attribute
                     var p2 = m.GetParameters().Zip(t.parameters, (targetParam, value) => CoerceParameter(value, targetParam.ParameterType)).ToArray(); 
                     var o = m.Invoke(target, p2);
                     var e2 = Convert.ChangeType(t.expected, m.ReturnType);
-                    ret &= Utils.Assert(p2, ToString(o), ToString(e2));
+                    ret &= Utils.Assert(p2, o, e2);
                 }
                 catch (Exception e)
                 {

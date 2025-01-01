@@ -7,17 +7,31 @@ using System.Text.RegularExpressions;
 
 public static class Utils
 {
+    public static bool Assert(object input, object actual, object expected)  
+    {
+        var success = false;
 
-    public static bool Assert<T>(object input, T actual, T expected)  {
+        if ((actual != null) == (expected != null)
+            && actual.GetType() == expected.GetType())
+        {
+            if (actual is System.Collections.IStructuralEquatable equatable)
+            {
+                success = equatable.Equals(expected, StructuralComparisons.StructuralEqualityComparer);
+            }
+            else
+            {
+                success = actual.Equals(expected);
 
-        var success = EqualityComparer<T>.Default.Equals(actual, expected);
+            }
+        }
+                
         if (success)
         {
-            Write("OK: " + actual.ToString(), ConsoleColor.DarkGreen);
+            Write("OK: " + describe(actual), ConsoleColor.DarkGreen);
         }
         else
         {
-            Write("WRONG: " + actual.ToString(), ConsoleColor.DarkRed);
+            Write("WRONG: " + describe(actual), ConsoleColor.DarkRed);
             success = false;
         }
 
@@ -32,13 +46,13 @@ public static class Utils
 
         if (!success)
         {
-            WriteLine("  Should be " + expected.ToString(), ConsoleColor.DarkRed);
+            WriteLine("  Should be " + describe(expected), ConsoleColor.DarkRed);
         }
 
         return success;
     }
 
-    private static string describe(object o)
+    public static string describe(object o)
     {
         if (o is IEnumerable && !(o is string))
         {
@@ -113,6 +127,7 @@ public static class Utils
         }
     }    
 
+    // Returns an array with one string for each regex group
     public static string[] RegexSplitByGroups(this string input, string regex)
     {
         var r = new Regex(regex, RegexOptions.Singleline | RegexOptions.Multiline);
@@ -148,7 +163,7 @@ public static class Utils
                 yield return buffer.ToArray();
                 buffer.Dequeue();
             }
-        }
+        }        
     }
 
     public static string After(this string s, string infix)
@@ -195,6 +210,20 @@ public static class Utils
     {
         return seq.Zip(seq.Skip(1), func);
     }
+
+    public static string[] SplitOnBlankLines(string input)
+    {
+        return input.Replace("\r\n", "\n").Split("\n\n", StringSplitOptions.RemoveEmptyEntries);
+    }
+
+    public static IEnumerable<(T First, T Second)> GetUniquePairs<T>(this IEnumerable<T> source)
+    {
+        var items = source.ToList();        
+        return items
+            .SelectMany((item, index) => 
+                items.Skip(index + 1)
+                    .Select(nextItem => (item, nextItem)));
+    }    
 
     
 }

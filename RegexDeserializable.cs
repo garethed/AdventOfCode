@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.ComponentModel;
 
 namespace AdventOfCode
 {
@@ -21,6 +22,11 @@ namespace AdventOfCode
             this.regex = regex;
         }
 
+        public static T DeserializeOne<T>(string serialized)
+        {
+            return Deserialize<T>(serialized).First();
+        }
+
         public static List<T> Deserialize<T>(string serialized)
         {
             RegexDeserializable[] attributes = (RegexDeserializable[]) typeof(T).GetCustomAttributes(typeof(RegexDeserializable), false);
@@ -34,7 +40,7 @@ namespace AdventOfCode
             Regex r = new Regex(regex, RegexOptions.Singleline | RegexOptions.Multiline);
             List<T> results = new List<T>();
 
-            var matches = r.Matches(serialized);
+            var matches = r.Matches(serialized.Replace("\r\n", "\n"));
 
             foreach (Match match in matches)
             {

@@ -48,7 +48,7 @@ public class Day10
     }
 
     [Solution(2023,10,2)]
-    [Test(101, testData2)]
+    [Test(10, testData2)]
     public int Part2(CharGrid2 grid)
     {
         Part1(grid);

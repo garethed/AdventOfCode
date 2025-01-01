@@ -19,17 +19,22 @@ record Input (string Data)
         {
             case nameof(Int32):
                 return int.Parse(data);
+            case nameof(Int64):
+                return long.Parse(data);
             case nameof(String):
                 return data.Replace("\r\n", "\n");  
             case "String[]":
                 return Utils.splitLines(data);
         }
 
-        if (targetType.Name == "List`1")
+        if (targetType.GetCustomAttribute<RegexDeserializable>() != null 
+            || (targetType.Name == "List`1" && targetType.GenericTypeArguments[0].GetCustomAttribute<RegexDeserializable>() != null))  
         {
             try 
             {
-                var deserializeMethodInfo = typeof(RegexDeserializable).GetMethod("Deserialize").MakeGenericMethod(targetType.GenericTypeArguments[0]);
+                var deserializeMethodName = (targetType.Name == "List`1") ? "Deserialize" : "DeserializeOne";
+                var actualTargetType = (targetType.Name == "List`1") ? targetType.GenericTypeArguments[0] : targetType;
+                var deserializeMethodInfo = typeof(RegexDeserializable).GetMethod(deserializeMethodName).MakeGenericMethod(actualTargetType);
                 return deserializeMethodInfo.Invoke(null, new[] { data });
             }
             catch (InvalidOperationException)
