@@ -1,6 +1,6 @@
 static class DataCache
 {
-    static string DataDirectory = @"C:\Users\Gareth\VsCode\AdventOfCode\Data";
+    static string DataDirectory = @"C:\Users\gredw\VsCode\AdventOfCode\Data";
 
     public static string Get(string store, string key, Func<string> getter)
     {
